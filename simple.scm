@@ -65,12 +65,12 @@
   (open-pipe* OPEN_WRITE "xmllint" "--format" "-"))
 
 (define* (write-html-page
-          title body #:key
+          page #:key
           (doctype (default-doctype))
           (pretty-print #t))
   (define (write-it)
     (display doctype)
-    (sxml->xml (make-html-page title body)))
+    (sxml->xml page))
   (if pretty-print
       (parameterize ((current-output-port (open-xmllint-pipe)))
         (write-it)
