@@ -51,6 +51,7 @@
           (content-type "text/html; charset=utf-8")
           (head-additions '())
           )
+  "Makes an HTML page object."
   `(*TOP*
     (html
      (@ (xmlns "http://www.w3.org/1999/xhtml"))
@@ -68,6 +69,7 @@
           page #:key
           (doctype (default-doctype))
           (pretty-print #t))
+  "Writes out an HTML page object as XML."
   (define (write-it)
     (display doctype)
     (sxml->xml page))
