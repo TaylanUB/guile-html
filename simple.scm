@@ -1,8 +1,8 @@
 ;;; simple.el --- HTML-specific wrapper for SXML
 
-;; Copyright (C) 2014  Taylan Ulrich Bayirli/Kammer
+;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
 
-;; Author: Taylan Ulrich Bayirli/Kammer <taylanbayirli@gmail.com>
+;; Author: Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
 ;; Keywords: html xhtml xml sxml
 
 ;; This program is free software; you can redistribute it and/or modify
