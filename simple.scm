@@ -65,7 +65,7 @@
     ,body))
 
 (define* (make-html-document-from-body-nodes nodes #:key title)
-  "Makes an HTML document object from a list of body nodes."
+  "Make a complete HTML document object from a list of body nodes."
   (let ((title (or title (sxml->string (car nodes)))))
     (make-html-document title `(body ,@nodes))))
 
@@ -76,7 +76,8 @@
           document #:key
           (doctype (default-doctype))
           (pretty-print #t))
-  "Writes out an HTML document object as XML."
+  "Writes out an HTML document object as XML.  No validation is done on the
+document object."
   (define (write-it)
     (display doctype)
     (sxml->xml document))
@@ -92,7 +93,8 @@
           (doctype (default-doctype))
           (pretty-print #t))
   "Reads a file (or standard-input-port) containing an HTML document object in
-SXML form, and writes it out as XML."
+SXML form, and writes it out as XML.  No validation is done on the document
+object."
   (let ((document (if file
                       (with-input-from-file file read)
                       (read))))
