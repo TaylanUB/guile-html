@@ -55,15 +55,14 @@
           (head-additions '())
           )
   "Makes an HTML document object."
-  `(*TOP*
-    (html
-     (@ (xmlns "http://www.w3.org/1999/xhtml"))
-     (head
-      (title ,title)
-      (meta (@ (http-equiv "Content-Type")
-               (content ,content-type)))
-      ,@head-additions)
-     ,body)))
+  `(html
+    (@ (xmlns "http://www.w3.org/1999/xhtml"))
+    (head
+     (title ,title)
+     (meta (@ (http-equiv "Content-Type")
+              (content ,content-type)))
+     ,@head-additions)
+    ,body))
 
 (define* (make-html-document-from-body-nodes nodes #:key title)
   "Makes an HTML document object from a list of body nodes."
