@@ -30,11 +30,11 @@
             doctype-xhtml11
             doctype-html5
             default-doctype
-            make-html-page
-            make-html-page-from-body-nodes
-            write-html-page
-            convert-sxml-html-page
-            convert-sxml-html-body
+            make-html-document
+            make-html-document-from-body-nodes
+            write-html-document
+            convert-sxml-html-file
+            convert-sxml-html-body-file
             ))
 
 (use-modules (sxml simple)
@@ -49,12 +49,12 @@
 
 (define default-doctype (make-parameter doctype-html5))
 
-(define* (make-html-page
+(define* (make-html-document
           title body #:key
           (content-type "text/html; charset=utf-8")
           (head-additions '())
           )
-  "Makes an HTML page object."
+  "Makes an HTML document object."
   `(*TOP*
     (html
      (@ (xmlns "http://www.w3.org/1999/xhtml"))
@@ -65,39 +65,40 @@
       ,@head-additions)
      ,body)))
 
-(define* (make-html-page-from-body-nodes nodes #:key title)
-  "Makes an HTML page object from a list of body nodes."
+(define* (make-html-document-from-body-nodes nodes #:key title)
+  "Makes an HTML document object from a list of body nodes."
   (let ((title (or title (sxml->string (car nodes)))))
-    (make-html-page title `(body ,@nodes))))
+    (make-html-document title `(body ,@nodes))))
 
 (define (open-xmllint-pipe)
   (open-pipe* OPEN_WRITE "xmllint" "--format" "-"))
 
-(define* (write-html-page
-          page #:key
+(define* (write-html-document
+          document #:key
           (doctype (default-doctype))
           (pretty-print #t))
-  "Writes out an HTML page object as XML."
+  "Writes out an HTML document object as XML."
   (define (write-it)
     (display doctype)
-    (sxml->xml page))
+    (sxml->xml document))
   (if pretty-print
       (parameterize ((current-output-port (open-xmllint-pipe)))
         (write-it)
         (close-pipe (current-output-port)))
       (write-it)))
 
-(define* (convert-sxml-html-page
+(define* (convert-sxml-html-file
           #:optional file
           #:key
           (doctype (default-doctype))
           (pretty-print #t))
-  "Reads a file (or standard-input-port) containing an HTML page object in SXML
-form, and writes it out as XML."
-  (let ((page (if file
-                  (with-input-from-file file read)
-                  (read))))
-    (write-html-page page #:doctype doctype #:pretty-print pretty-print)))
+  "Reads a file (or standard-input-port) containing an HTML document object in
+SXML form, and writes it out as XML."
+  (let ((document (if file
+                      (with-input-from-file file read)
+                      (read))))
+    (write-html-document
+     document #:doctype doctype #:pretty-print pretty-print)))
 
 (define (read-sxml-nodes)
   (let read-nodes ((nodes '()))
@@ -106,7 +107,7 @@ form, and writes it out as XML."
           (reverse nodes)
           (read-nodes (cons node nodes))))))
 
-(define* (convert-sxml-html-body
+(define* (convert-sxml-html-body-file
           #:optional file
           #:key
           title
@@ -114,11 +115,12 @@ form, and writes it out as XML."
           (pretty-print #t))
   "Reads a file (or standard-input-port) containing top-level SXML forms
 representing the body of an HTML document, adds boilerplate to make a complete
-HTML page object, then writes it out as XML."
+HTML document object, then writes it out as XML."
   (let ((nodes (if file
                    (with-input-from-file file read-sxml-nodes)
                    (read-sxml-nodes))))
-    (write-html-page (make-html-page-from-body-nodes nodes #:title title)
-                     #:doctype doctype #:pretty-print pretty-print)))
+    (write-html-document
+     (make-html-document-from-body-nodes nodes #:title title)
+     #:doctype doctype #:pretty-print pretty-print)))
 
 ;;; simple.scm ends here
